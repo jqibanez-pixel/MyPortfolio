@@ -83,7 +83,7 @@
   .hero div > a { opacity:0; transform:translateY(20px); animation: fadeUp 1s forwards 0.7s; }
 
   /* Hero card */
-  .hero-card { background: rgba(255,255,255,0.06); border-radius: var(--radius-lg); padding:.9rem; display:grid; grid-template-rows:auto 1fr; gap:.8rem; align-items:start; justify-items:center; text-align:center; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.08); color:#fff; transition: transform var(--transition), background var(--transition);}
+  .hero-card { background: rgba(255,255,255,0.06); border-radius: var(--radius-lg); padding:.9rem; display:grid; grid-template-rows:auto 1fr; gap:.8rem; align-items:start; justify-items:center; text-align:center; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.08); color:#fff; transition: transform var(--transition), background var(--transition); }
   body.light .hero-card { background: rgba(255,255,255,0.3); color: #111;}
   .hero-card img { width:100%; height:260px; object-fit:cover; border-radius:8px; box-shadow:0 8px 28px rgba(0,0,0,0.5); transition: transform var(--transition); }
   .hero-card:hover img { transform: scale(1.05); }
@@ -111,21 +111,74 @@
   /* Portfolio */
   .projects-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
   @media(max-width:980px){ .projects-grid { grid-template-columns:1fr; } }
-  .project { border-radius:12px; overflow:hidden; background: var(--surface); box-shadow: var(--shadow); transition: transform var(--transition), box-shadow var(--transition); }
+  .project { border-radius:12px; overflow:hidden; background: var(--surface); box-shadow: var(--shadow); transition: transform var(--transition), box-shadow var(--transition); cursor:pointer; position:relative; }
   .project:hover { transform:translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.3);}
-  .project img { width:100%; height:220px; object-fit:cover; transition: transform var(--transition); }
+  .project img { width:100%; height:220px; object-fit:cover; transition: transform var(--transition); display:block; }
   .project:hover img { transform: scale(1.05); }
   .project .pmeta { padding:.9rem; font-weight:700; color:var(--text); transition: color var(--transition); }
+  /* small overlay hint on project */
+  .project .overlay-hint { position:absolute; inset:auto 12px 12px auto; background: rgba(0,0,0,0.45); color:#fff; padding:.35rem .6rem; border-radius:8px; font-size:.82rem; backdrop-filter: blur(4px); }
+
+  /* Modal (portfolio detail) */
+  .modal-backdrop {
+    position:fixed;
+    inset:0;
+    background: rgba(6,8,12,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1100;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity 260ms ease;
+  }
+  .modal-backdrop.show { opacity:1; pointer-events:auto; }
+  .modal {
+    width: min(920px, 94%);
+    max-height: 86vh;
+    overflow:auto;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    padding: 1.2rem;
+    transform: translateY(12px);
+    transition: transform 260ms ease;
+    color: var(--text);
+    position: relative;
+  }
+  .modal-backdrop.show .modal { transform: translateY(0); }
+  .modal-grid { display:grid; grid-template-columns: 1fr 340px; gap:1rem; align-items:start; }
+  @media(max-width:880px){ .modal-grid { grid-template-columns:1fr; } }
+  .modal-image { width:100%; border-radius:8px; overflow:hidden; background:#111; }
+  .modal-image img { width:100%; height:100%; object-fit:cover; display:block; }
+  .modal-content h3 { margin-bottom:.4rem; font-size:1.1rem; }
+  .modal-content p { color:var(--muted); margin-bottom:.8rem; line-height:1.45; }
+  .meta-row { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin-bottom:.8rem; }
+  .meta-chip { background: rgba(255,255,255,0.05); padding:.4rem .6rem; border-radius:8px; font-size:.88rem; color:var(--text); border:1px solid rgba(255,255,255,0.04); }
+  .modal-close { position:absolute; top:14px; right:16px; background:transparent; border:none; color:var(--text); font-size:1.1rem; cursor:pointer; }
 
   /* Skills */
   .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; margin-top:1rem; }
-  .skill-card { background: var(--surface); padding:1.2rem; border-radius:var(--radius-lg); box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.6rem; transition: transform var(--transition), background var(--transition); }
+  .skill-card { background: var(--surface); padding:1.2rem; border-radius:var(--radius-lg); box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.6rem; transition: transform var(--transition), background var(--transition); cursor: pointer; position:relative; }
   body.light .skill-card { background: var(--surface); }
   .skill-card:hover { transform:translateY(-4px); }
   .skill-card h3 { font-size:1.05rem; font-weight:700; color: var(--text); transition: color var(--transition); }
   .skill-bar { width:100%; height:10px; background: rgba(255,255,255,0.08); border-radius: var(--radius-md); overflow:hidden; }
   body.light .skill-bar { background: rgba(0,0,0,0.05); }
   .skill-level { height:100%; background: var(--primary); border-radius:var(--radius-md); transition: width 0.5s ease, background var(--transition); }
+
+  /* expandable skill description */
+  .skill-desc {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 260ms ease, padding 260ms ease;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+  .skill-card.expanded .skill-desc {
+    padding-top: .6rem;
+    max-height: 240px;
+  }
 
   /* Contact */
   .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:2rem; }
@@ -234,57 +287,117 @@
     <!-- PORTFOLIO -->
     <section id="portfolio">
       <h2>Portfolio</h2>
-     <div class="projects-grid">
-  <div class="project"><img src="ji.jpg" alt=""><div class="pmeta">Brew Haven</div></div>
-  <div class="project"><img src="FLYER.png" alt=""><div class="pmeta">Clothing Flyer</div></div>
-  <div class="project"><img src="azteconline.png" alt=""><div class="pmeta">Web-based</div></div>
-  <div class="project"><img src="Hardware.png" alt=""><div class="pmeta">Hardware Specialist</div></div>
-    </div>
+      <div class="projects-grid">
+        <!--
+          Projects: data-title, data-desc, data-tools (before/after removed)
+        -->
+        <div class="project"
+             data-title="Brew Haven"
+             data-desc="A poster and branding package for a local coffee shop — focused on warm tones, legible display typography, and a modular social media set."
+             data-tools="Canva"
+        >
+          <img src="ji.jpg" alt="Brew Haven project">
+          <div class="pmeta">Brew Haven</div>
+          <div class="overlay-hint">View details</div>
+        </div>
+
+        <div class="project"
+             data-title="Clothing Flyer"
+             data-desc="A promotional flyer for a clothing sale, emphasizing bold typography and hierarchy to lift conversions for a weekend promo."
+             data-tools="Canva"
+        >
+          <img src="FLYER.png" alt="Clothing Flyer">
+          <div class="pmeta">Clothing Flyer</div>
+          <div class="overlay-hint">View details</div>
+        </div>
+
+        <div class="project"
+             data-title="Aztec Online"
+             data-desc="Web layout & mockups for an e-commerce site — focused on responsiveness, clear CTAs and a lightweight hero section."
+             data-tools="VsCode, HTML/CSS, JavaScript"
+        >
+          <img src="azteconline.png" alt="Aztec Online">
+          <div class="pmeta">Web-based</div>
+          <div class="overlay-hint">View details</div>
+        </div>
+
+        <div class="project"
+             data-title="Hardware Specialist"
+             data-desc="Brand collateral for a hardware repair service — includes logo, service cards, and social templates."
+             data-tools="Illustrator, Photoshop"
+        >
+          <img src="Hardware.png" alt="Hardware Specialist">
+          <div class="pmeta">Hardware Specialist</div>
+          <div class="overlay-hint">View details</div>
+        </div>
+      </div>
+
+      <!-- Modal (hidden by default) -->
+      <div id="portfolio-modal-backdrop" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+        <div class="modal" role="document">
+          <button aria-label="Close" class="modal-close" id="modal-close">✕</button>
+          <div class="modal-grid">
+            <div class="modal-image" id="modal-image">
+              <!-- image populated by JS -->
+              <img src="" alt="" id="modal-main-img">
+            </div>
+            <div class="modal-content">
+              <h3 id="modal-title">Project Title</h3>
+              <div class="meta-row">
+                <div class="meta-chip" id="modal-tools">Tools: —</div>
+              </div>
+              <p id="modal-desc">Project description goes here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </section>
 
     <!-- SKILLS -->
-<section id="skills">
-  <h2>Skills</h2>
-  <div class="skills-grid">
-    
-    <div class="skill-card">
-      <img src="gd.png" alt="Graphic Design" class="skill-icon">
-      <h3>Graphic Design</h3>
-      <div class="skill-bar"><div class="skill-level" style="width:95%;" data-level="95%"></div></div>
-    </div>
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <div class="skill-card" data-desc="I design posters, brand marks, social kits, and layouts with an emphasis on composition, color, and typography.">
+          <img src="gd.png" alt="Graphic Design" class="skill-icon">
+          <h3>Graphic Design</h3>
+          <div class="skill-bar"><div class="skill-level" style="width:0;" data-level="95%"></div></div>
+          <div class="skill-desc">I design posters, brand marks, social kits, and layouts with an emphasis on composition, color, and typography.</div>
+        </div>
 
-    <div class="skill-card">
-      <img src="c++.webp" alt="C++" class="skill-icon">
-      <h3>C++</h3>
-      <div class="skill-bar"><div class="skill-level" style="width:85%;" data-level="85%"></div></div>
-    </div>
+        <div class="skill-card" data-desc="Fundamentals of programming and problem solving using C++ — used for algorithms and systems logic.">
+          <img src="c++.webp" alt="C++" class="skill-icon">
+          <h3>C++</h3>
+          <div class="skill-bar"><div class="skill-level" style="width:0;" data-level="85%"></div></div>
+          <div class="skill-desc">Fundamentals of programming and problem solving using C++ — used for algorithms and systems logic.</div>
+        </div>
 
-    <div class="skill-card">
-      <img src="html.png" alt="HTML" class="skill-icon">
-      <h3>HTML</h3>
-      <div class="skill-bar"><div class="skill-level" style="width:90%;" data-level="90%"></div></div>
-    </div>
+        <div class="skill-card" data-desc="Semantic HTML, accessible markup, and structuring content for responsive layouts.">
+          <img src="html.png" alt="HTML" class="skill-icon">
+          <h3>HTML</h3>
+          <div class="skill-bar"><div class="skill-level" style="width:0;" data-level="90%"></div></div>
+          <div class="skill-desc">Semantic HTML, accessible markup, and structuring content for responsive layouts.</div>
+        </div>
 
-    <div class="skill-card">
-      <img src="css.png" alt="CSS" class="skill-icon">
-      <h3>CSS</h3>
-      <div class="skill-bar"><div class="skill-level" style="width:80%;" data-level="80%"></div></div>
-    </div>
+        <div class="skill-card" data-desc="Modern CSS techniques — Flexbox, Grid, animations, and theming for responsive UI.">
+          <img src="css.png" alt="CSS" class="skill-icon">
+          <h3>CSS</h3>
+          <div class="skill-bar"><div class="skill-level" style="width:0;" data-level="80%"></div></div>
+          <div class="skill-desc">Modern CSS techniques — Flexbox, Grid, animations, and theming for responsive UI.</div>
+        </div>
 
-    <div class="skill-card">
-      <img src="js.png" alt="JavaScript" class="skill-icon">
-      <h3>JavaScript</h3>
-      <div class="skill-bar"><div class="skill-level" style="width:85%;" data-level="85%"></div></div>
-    </div>
-    
-    <div></div> <div></div> <div> </div> 
-    <div style="margin-bottom:1.5rem;">
-      <a href="Resume.pdf" download class="btn-primary">Download Resume (PDF)</a>
-    </div>
-  </div>
-</section>
+        <div class="skill-card" data-desc="Vanilla JavaScript for DOM, events, and small interactive components; some experience with modern frameworks.">
+          <img src="js.png" alt="JavaScript" class="skill-icon">
+          <h3>JavaScript</h3>
+          <div class="skill-bar"><div class="skill-level" style="width:0;" data-level="85%"></div></div>
+          <div class="skill-desc">Vanilla JavaScript for DOM, events, and small interactive components; some experience with modern frameworks.</div>
+        </div>
 
+        <div style="margin-bottom:1.5rem;">
+          <a href="Resume.pdf" download class="btn-primary">Download Resume (PDF)</a>
+        </div>
+      </div>
+    </section>
 
     <!-- CONTACT -->
     <section id="contact">
@@ -292,11 +405,11 @@
       <div class="contact-grid">
         <div class="contact-card">
           <p class="muted">Feel free to reach out for projects, collaborations, or just a chat about design.</p>
-          <form 
-            action="https://formspree.io/f/myzoorrn" 
-            method="POST" 
-            id="contact-form" 
-            novalidate 
+          <form
+            action="https://formspree.io/f/myzoorrn"
+            method="POST"
+            id="contact-form"
+            novalidate
             style="display:flex; flex-direction:column; gap:1.2rem;"
           >
             <p>Name:</p>
@@ -325,7 +438,7 @@
     </section>
 
     <!-- SUCCESS POPUP -->
-    <div id="success-popup" 
+    <div id="success-popup"
          style="position: fixed; bottom: 30px; right: 30px; background: #222; color: #fff; padding: 1rem 1.3rem; border-radius: 10px; box-shadow: 0 0 18px rgba(0,0,0,0.4); font-size: .95rem; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all .35s ease;">
       Message sent successfully!
     </div>
@@ -385,7 +498,7 @@
     if(heroCard) heroCard.classList.add('animate');
   });
 
-  // Contact form
+  // Contact form (Formspree) -> show success popup and prevent redirect
   const form = document.getElementById('contact-form');
   const successPopup = document.getElementById('success-popup');
 
@@ -398,6 +511,7 @@
     const formData = new FormData(form);
 
     try {
+      // send to Formspree endpoint but do not allow redirect
       const response = await fetch(form.action, { method:'POST', body:formData, headers:{ 'Accept':'application/json' } });
       if(response.ok){
         form.reset();
@@ -418,27 +532,110 @@
       submitBtn.disabled = false;
       submitBtn.textContent = "Send Message";
     }
+  });
 
-// Animate skill bars when scrolled into view
-const skillCards = document.querySelectorAll('.skill-card');
+  // Animate skill bars when scrolled into view + initial set to 0 then animate
+  const skillCards = document.querySelectorAll('.skill-card');
+  function animateSkills() {
+    skillCards.forEach(card => {
+      const skillBar = card.querySelector('.skill-level');
+      const rect = card.getBoundingClientRect();
+      if(rect.top < window.innerHeight - 50) {
+        const width = skillBar.getAttribute('data-level') || '0%';
+        skillBar.style.width = width;
+      }
+    });
+  }
+  window.addEventListener('scroll', animateSkills);
+  window.addEventListener('load', animateSkills);
 
-function animateSkills() {
-  skillCards.forEach(card => {
-    const skillBar = card.querySelector('.skill-level');
-    const rect = card.getBoundingClientRect();
-    if(rect.top < window.innerHeight - 50) {
-      const width = skillBar.getAttribute('data-level');
-      skillBar.style.width = width;
+  // ---------- Portfolio modal logic ----------
+  const projects = document.querySelectorAll('.projects-grid .project');
+  const backdrop = document.getElementById('portfolio-modal-backdrop');
+  const modalCloseBtn = document.getElementById('modal-close');
+  const modalTitle = document.getElementById('modal-title');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalTools = document.getElementById('modal-tools');
+  const modalMainImg = document.getElementById('modal-main-img');
+
+  function openModalFromProject(projectEl){
+    const title = projectEl.dataset.title || projectEl.querySelector('.pmeta')?.textContent || 'Project';
+    const desc = projectEl.dataset.desc || 'No description provided.';
+    const tools = projectEl.dataset.tools || '';
+
+    modalTitle.textContent = title;
+    modalDesc.textContent = desc;
+    modalTools.textContent = tools ? 'Tools: ' + tools : 'Tools: —';
+
+    // main image: use project's img src
+    modalMainImg.src = projectEl.querySelector('img')?.src || '';
+    modalMainImg.alt = title;
+
+    // show modal
+    backdrop.classList.add('show');
+    backdrop.setAttribute('aria-hidden', 'false');
+
+    // lock scroll on body
+    document.documentElement.style.overflow = 'hidden';
+
+    // move focus into close button for accessibility
+    setTimeout(()=> modalCloseBtn.focus(), 120);
+  }
+
+  function closeModal(){
+    backdrop.classList.remove('show');
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+  }
+
+  // attach click handlers
+  projects.forEach(p => {
+    p.addEventListener('click', (ev) => {
+      // avoid activating if clicking a link inside (if any)
+      if (ev.target.tagName.toLowerCase() === 'a') return;
+      openModalFromProject(p);
+    });
+  });
+
+  // close button
+  modalCloseBtn.addEventListener('click', closeModal);
+
+  // click outside to close
+  backdrop.addEventListener('click', function(e){
+    if(e.target === backdrop) closeModal();
+  });
+
+  // esc to close
+  window.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && backdrop.classList.contains('show')) closeModal();
+  });
+
+  // Accessibility: trap focus inside modal while open (basic)
+  backdrop.addEventListener('keydown', function(e){
+    if(e.key !== 'Tab') return;
+    const focusable = backdrop.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+    if(!focusable || focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if(e.shiftKey && document.activeElement === first) {
+      last.focus();
+      e.preventDefault();
+    } else if(!e.shiftKey && document.activeElement === last) {
+      first.focus();
+      e.preventDefault();
     }
   });
-}
 
-window.addEventListener('scroll', animateSkills);
-window.addEventListener('load', animateSkills);
-
-
+  // ---------- Skill card click -> toggle description ----------
+  skillCards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      // prevent toggling when clicking inputs or links inside (none expected)
+      if (['a','button','input','textarea'].includes(e.target.tagName.toLowerCase())) return;
+      card.classList.toggle('expanded');
+    });
   });
-  
+
+  // End of script
 </script>
 
 </body>
